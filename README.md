@@ -8,7 +8,7 @@ To run:
 
 - Build the jar file for this example.
   - If you have [Boot](http://boot-clj.com), you can do this by running `boot build`.
-- Run the jar file with `java -jar target/server.jar`.
+- Run the jar file with `java -jar target/server.jar`. (The location of the jar file may be different, depending on how you built it.)
 - This will run a "server" that is really just an infinite loop that will take action whenever you press the Enter key.
 
   Each time you press Enter, the server will play 3 piano notes (C, D, E), roughly in time (`Thread.sleep` is not accurate), and as each note is played, the server will also print which note it is playing.
