@@ -7,6 +7,15 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
 
 public class Main {
+  public static void wait(int durationMs) {
+    try {
+      Thread.sleep(durationMs);
+    } catch (InterruptedException e) {
+      System.out.println("Thread interrupted. OK, bye!");
+      System.exit(1);
+    }
+  }
+
   public static Synthesizer getNewSynth() throws MidiUnavailableException {
     Synthesizer synth = MidiSystem.getSynthesizer();
     synth.open();
@@ -15,19 +24,12 @@ public class Main {
 
   public static void playNote(MidiChannel channel, int noteNumber, int durationMs) {
     channel.noteOn(noteNumber, 127);
-    try {
-      Thread.sleep(durationMs);
-    } catch (InterruptedException e) {
-      System.out.println("Thread interrupted. OK, bye!");
-      System.exit(1);
-    }
+    wait(durationMs);
     channel.noteOff(noteNumber);
   }
 
   public static void playAndPrintNotes(Synthesizer synth) {
     MidiChannel channel = synth.getChannels()[0];
-
-    System.out.println("Playing notes...");
 
     int[] notes = {60, 62, 64};
 
@@ -36,7 +38,7 @@ public class Main {
       playNote(channel, note, 500);
     }
 
-    System.out.println();
+    wait(500); // don't cut the last note off too early
   }
 
   public static void main(String[] argv) {
@@ -59,12 +61,16 @@ public class Main {
         Synthesizer synth = getNewSynth();
         System.out.println("done.");
 
+        System.out.println("Giving it a second to warm up...");
+        wait(1000);
+
+        System.out.println("Playing notes...");
         playAndPrintNotes(synth);
 
         System.out.print("Closing synth... ");
         System.out.flush();
         synth.close();
-        System.out.println("done.");
+        System.out.println("done.\n");
       } catch (MidiUnavailableException e) {
         System.out.println("ERROR: MIDI system unavailable.");
         System.exit(1);
