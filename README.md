@@ -6,7 +6,8 @@ This problem may or may not be platform-specific. I am seeing this problem with 
 
 To run:
 
-- Run `boot build` (requires the Java/Clojure build tool [Boot](http://boot-clj.com)) to build a jar file of this example.
+- Build the jar file for this example.
+  - If you have [Boot](http://boot-clj.com), you can do this by running `boot build`.
 - Run the jar file with `java -jar target/server.jar`.
 - This will run a "server" that is really just an infinite loop that will take action whenever you press the Enter key.
 
