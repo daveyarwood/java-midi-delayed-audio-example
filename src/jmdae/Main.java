@@ -1,6 +1,8 @@
 package jmdae;
 
 import java.io.Console;
+import java.util.Collections;
+import java.util.Map;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
@@ -13,7 +15,13 @@ public class Main {
   public static void initializeSynth() {
     try {
       synth = MidiSystem.getSynthesizer();
-      synth.open();
+
+      if (synth instanceof com.sun.media.sound.SoftSynthesizer) {
+        Map<String, Object> params = Collections.singletonMap("jitter correction", false);
+        ((com.sun.media.sound.SoftSynthesizer) synth).open(null, params);
+      } else {
+        synth.open();
+      }
 
       channel = synth.getChannels()[0];
 
