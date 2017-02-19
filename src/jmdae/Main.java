@@ -10,6 +10,15 @@ public class Main {
   public static Synthesizer synth;
   public static MidiChannel channel;
 
+  public static void unsafeSleep(int ms) {
+    try {
+      Thread.sleep(ms);
+    } catch (InterruptedException e) {
+      System.out.println("Thread interrupted. OK, bye!");
+      System.exit(1);
+    }
+  }
+
   public static void initializeSynth() {
     try {
       synth = MidiSystem.getSynthesizer();
@@ -23,19 +32,32 @@ public class Main {
     }
   }
 
-  public static void playNote(int noteNumber, int durationMs) {
-    channel.noteOn(noteNumber, 127);
+  public static void reopenSynth() {
     try {
-      Thread.sleep(durationMs);
-    } catch (InterruptedException e) {
-      System.out.println("Thread interrupted. OK, bye!");
+      System.out.println("Restarting synth...");
+
+      synth.close();
+      synth.open();
+
+      System.out.println("Giving it a few seconds to warm up...");
+      unsafeSleep(2000);
+    } catch (MidiUnavailableException e) {
+      System.out.println("ERROR: MIDI system unavailable.");
       System.exit(1);
     }
+  }
+
+  public static void playNote(int noteNumber, int durationMs) {
+    channel.noteOn(noteNumber, 127);
+    unsafeSleep(durationMs);
     channel.noteOff(noteNumber);
   }
 
   public static void playAndPrintNotes() {
     System.out.println("Playing notes...");
+
+    // close and re-open synthesizer to work around this bug
+    reopenSynth();
 
     int[] notes = {60, 62, 64};
 
